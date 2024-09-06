@@ -1,20 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.25;
 
-// interfaces
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import {IExtendedResolver} from "@ensdomains/ens-contracts/contracts/resolvers/profiles/IExtendedResolver.sol";
 import {IAddrResolver} from "@ensdomains/ens-contracts/contracts/resolvers/profiles/IAddrResolver.sol";
 import {IAddressResolver} from "@ensdomains/ens-contracts/contracts/resolvers/profiles/IAddressResolver.sol";
 
-// libraries
 import {BytesUtils} from "@ensdomains/ens-contracts/contracts/utils/BytesUtils.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {GatewayFetcher, GatewayRequest} from "@unruggable/gateways/contracts/GatewayFetcher.sol";
 import  "@unruggable/gateways/contracts/GatewayProtocol.sol";
-
-// bases
 import {GatewayFetchTarget, IGatewayProofVerifier} from "@unruggable/gateways/contracts/GatewayFetchTarget.sol";
+
+import {console2 as console} from "forge-std/console2.sol"; // DEBUG
+
 
 contract OPResolver is IERC165, IExtendedResolver, GatewayFetchTarget {
 	using BytesUtils for bytes;
@@ -25,7 +24,8 @@ contract OPResolver is IERC165, IExtendedResolver, GatewayFetchTarget {
 	address constant STORAGE_CONTRACT_ADDRESS = 0xc695404735E0F1587A5398a06cAB34D7d7b009Da;
 
 	constructor(IGatewayProofVerifier verifier) {
-		_verifier = verifier;
+		console.log("Constructing OPResolver..");
+        _verifier = verifier;
 	}
 
     function supportsInterface(bytes4 x) external pure returns (bool) {
@@ -35,6 +35,8 @@ contract OPResolver is IERC165, IExtendedResolver, GatewayFetchTarget {
     function resolve(bytes calldata name, bytes calldata data) external view returns (bytes memory) {
 
 		bytes4 selector = bytes4(data);
+        console.log("Resolving Selector: ");
+        console.logBytes4(selector);
 
         if (selector == IAddrResolver.addr.selector || selector == IAddressResolver.addr.selector) {
 
@@ -77,6 +79,7 @@ contract OPResolver is IERC165, IExtendedResolver, GatewayFetchTarget {
                 .offset(1).read() // registry
                 .requireNonzero(uint8(0)) // require registry
                 .setOutput(0); // save it
+                
             
             baseRequest.push(subRequest).evalLoop(STOP_ON_FAILURE); // loop until we get a failure
             baseRequest.pushOutput(1).requireNonzero(uint8(0)).target() // set target to resolver
@@ -91,6 +94,8 @@ contract OPResolver is IERC165, IExtendedResolver, GatewayFetchTarget {
 	}
 
     function addrCallback(bytes[] calldata values, uint8, bytes calldata extraData) external pure returns (bytes memory) {
+
+        console.log("3668 Callback");
 		return bytes4(extraData) == IAddrResolver.addr.selector ? abi.encode(bytes32(values[2])) : abi.encode(values[2][12:]);
 	}
 
