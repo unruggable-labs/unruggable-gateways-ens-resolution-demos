@@ -1,0 +1,17 @@
+{
+  "name": "opdemo",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@adraffy/blocksmith": "^0.0.29",
+    "@ensdomains/ens-contracts": "^1.2.2",
+    "@openzeppelin/contracts": "^5.0.2",
+    "@unruggable/gateways": "^0.0.6"
+  }
+}
