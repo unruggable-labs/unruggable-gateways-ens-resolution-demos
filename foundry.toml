@@ -4,9 +4,8 @@ out = "out"
 libs = ["lib"]
 
 remappings = [
-    "@openzeppelin=node_modules/@openzeppelin/",
     "@ensdomains=node_modules/@ensdomains/",
-    "@unruggable=node_modules/@unruggable/"
+    "@unruggable=lib/unruggable-gateways/"
 ]
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

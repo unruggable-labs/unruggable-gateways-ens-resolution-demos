@@ -33,7 +33,7 @@ const deployerWallet = foundry.wallets.admin;
 
 //Deploy gamefinder
 const gameFinder = await foundry.deploy({
-    import: `@unruggable/gateways/contracts/op/OPFaultGameFinder.sol`,
+    file: `OPFaultGameFinder`,
     args: [],
 });
 
@@ -45,7 +45,7 @@ const verifier = await foundry.deploy({
 
 //Deploy proxy
 const proxy = await foundry.deploy({
-    import: `@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol`,
+    file: `TransparentUpgradeableProxy`,
     args: [verifier.target, deployerWallet.address, '0x'],
 });
 
