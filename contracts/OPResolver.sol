@@ -2,11 +2,11 @@
 pragma solidity ^0.8.25;
 
 import {IERC165} from "@unruggable/lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol";
-import {IExtendedResolver} from "@ensdomains/ens-contracts/contracts/resolvers/profiles/IExtendedResolver.sol";
-import {IAddrResolver} from "@ensdomains/ens-contracts/contracts/resolvers/profiles/IAddrResolver.sol";
-import {IAddressResolver} from "@ensdomains/ens-contracts/contracts/resolvers/profiles/IAddressResolver.sol";
+import {IExtendedResolver} from "@ensdomains/contracts/resolvers/profiles/IExtendedResolver.sol";
+import {IAddrResolver} from "@ensdomains/contracts/resolvers/profiles/IAddrResolver.sol";
+import {IAddressResolver} from "@ensdomains/contracts/resolvers/profiles/IAddressResolver.sol";
 
-import {BytesUtils} from "@ensdomains/ens-contracts/contracts/utils/BytesUtils.sol";
+import {BytesUtils} from "@ensdomains/contracts/utils/BytesUtils.sol";
 import {Strings} from "@unruggable/lib/openzeppelin-contracts/contracts/utils/Strings.sol";
 import {GatewayFetcher, GatewayRequest} from "@unruggable/contracts/GatewayFetcher.sol";
 import  "@unruggable/contracts/GatewayProtocol.sol";

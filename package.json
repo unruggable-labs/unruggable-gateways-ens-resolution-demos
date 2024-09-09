@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@adraffy/blocksmith": "^0.0.29",
-    "@ensdomains/ens-contracts": "^1.2.2",
     "@unruggable/gateways": "^0.0.8"
   }
 }

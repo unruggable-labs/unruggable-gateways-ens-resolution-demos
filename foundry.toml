@@ -4,7 +4,7 @@ out = "out"
 libs = ["lib"]
 
 remappings = [
-    "@ensdomains=node_modules/@ensdomains/",
+    "@ensdomains=lib/ens-contracts/",
     "@unruggable=lib/unruggable-gateways/"
 ]
 
