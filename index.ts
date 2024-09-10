@@ -63,7 +63,6 @@ await foundry.confirm(
 );  
 await foundry.confirm(proxyUsingInterface.setWindow(rollup.defaultWindow));
 await foundry.confirm(proxyUsingInterface.setPortal(rollup.OptimismPortal.target));
-console.log("rolluop.gameTypeBitMask", rollup.gameTypeBitMask);
 await foundry.confirm(proxyUsingInterface.setGameTypes(rollup.gameTypeBitMask));
 
 const ENS = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e';
@@ -75,14 +74,10 @@ const EXAMPLE_CONTRACT_ADDRESS = '0xf9d79d8c09d24e0C47E32778c830C545e78512CF';
 
 // Test with the ExampleResolver that reads a value from our live deployed SlotDataContract
 // Uncomment this block, and comment the block below to test with the ExampleResolver
- const opL1Resolver2 = await foundry.deploy({
-     file: 'ExampleResolver',
-     args: [proxy.target, EXAMPLE_CONTRACT_ADDRESS],
- });
- console.log("opL1Resolver2 target:", opL1Resolver2.target);
-
-
-console.log("Proxy target:", proxy.target);
+// const opL1Resolver = await foundry.deploy({
+//     file: 'ExampleResolver',
+//     args: [proxy.target, EXAMPLE_CONTRACT_ADDRESS],
+// });
 
 // Test with the OPResolver that reads does a complex v2-spec like resolution
 const opL1Resolver = await foundry.deploy({
@@ -92,7 +87,7 @@ const opL1Resolver = await foundry.deploy({
   
 
 console.log('Resolver depl:', opL1Resolver.target);
-/*
+
 // replace real teamnick resolver with fake
 await foundry.provider.send('anvil_setStorageAt', [
   ENS,
@@ -105,7 +100,7 @@ const ens = new ethers.Contract(
   foundry.provider
 );
 console.log('Hijacked:', await ens.resolver(NODE));
-*/
+
 async function resolve(name: string, keys = ['avatar'], coinType = 60) {
   const resolver = await foundry.provider.getResolver(name);
 
@@ -121,6 +116,6 @@ async function resolve(name: string, keys = ['avatar'], coinType = 60) {
   });
 }
 
-//await resolve('opdemo.eth');
+await resolve('opdemo.eth');
 
 await foundry.shutdown();

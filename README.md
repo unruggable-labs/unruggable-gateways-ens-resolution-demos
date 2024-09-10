@@ -4,6 +4,8 @@
 
 # ENS Resolution Demo (from Optimism Mainnet)
 
+![Resolution Demo](https://github.com/unruggable-labs/unruggable-gateways-op-stack-ens-resolution-demo/actions/workflows/resolution-demo.yml/badge.svg)
+
 This demo demonstrates a full end to end implementation of the [Unruggable Gateways](https://github.com/unruggable-labs/unruggable-gateways) codebase for resolving an ENS name using data stored on Optimism mainnnet. 
 
 It utilises [Foundry](https://github.com/foundry-rs) (through [blocksmith.js](https://github.com/adraffy/blocksmith.js)) to fork **Ethereum mainnet** and deploy an instance of `OPFaultVerifier`. This verifier is used to verify proofs returned by Unruggable's Optimism gateway running at `https://op-gateway.unruggable.com`.

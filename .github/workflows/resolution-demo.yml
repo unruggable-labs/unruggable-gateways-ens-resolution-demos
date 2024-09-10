@@ -22,12 +22,12 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1.2.0
+
       - name: Pull & update submodules recursively
         run: |
             git submodule update --init --recursive
-
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1.2.0
 
       - name: 'Create env file'
         run: |
@@ -41,32 +41,3 @@ jobs:
 
       - name: Run examples
         run: bun run index.ts
-
-      - name: build
-        run: |
-          forge build
-        working-directory: ./
-        if: always()
-
-
-      # Step to output the file structure
-      - name: PWD
-        run: |
-          pwd
-        working-directory: ./
-        if: always()
-
-      # Step to output the file structure
-      - name: forge version
-        run: |
-          forge --version
-        working-directory: ./
-        if: always()
-
-      # Step to output the file structure
-      - name: Output file structure
-        run: |
-          echo "File structure after build:"
-          ls -R ./out
-        working-directory: ./
-        if: always()
