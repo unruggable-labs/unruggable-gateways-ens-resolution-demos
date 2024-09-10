@@ -1,8 +1,6 @@
 [profile.default]
 src = "contracts"
 libs = ["lib"]
-solc = "0.8.25"
-
 
 remappings = [
     "@ensdomains=lib/ens-contracts/",
