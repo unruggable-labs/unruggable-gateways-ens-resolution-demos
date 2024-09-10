@@ -9,7 +9,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@adraffy/blocksmith": "https://github.com/clowestab/blocksmith.js",
+    "@adraffy/blocksmith": "^0.0.33",
     "@unruggable/gateways": "^0.0.8"
   }
 }
