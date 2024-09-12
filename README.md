@@ -1,10 +1,10 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/unruggable-labs/unruggable-gateways-op-stack-ens-resolution-demo/main/unruggable-logo-black.png" style = "width:300px;" alt = "Unruggable Gateways" />
+    <img src="https://raw.githubusercontent.com/unruggable-labs/unruggable-gateways-ens-resolution-demos/main/unruggable-logo-black.png" style = "width:300px;" alt = "Unruggable Gateways" />
 </p>
 
 # ENS Resolution Demo (from Optimism Mainnet)
 
-![Resolution Demo](https://github.com/unruggable-labs/unruggable-gateways-op-stack-ens-resolution-demo/actions/workflows/resolution-demo.yml/badge.svg)
+![Resolution Demo](https://github.com/unruggable-labs/unruggable-gateways-ens-resolution-demos/actions/workflows/resolution-demo.yml/badge.svg)
 
 This demo demonstrates a full end to end implementation of the [Unruggable Gateways](https://github.com/unruggable-labs/unruggable-gateways) codebase for resolving an ENS name using data stored on Optimism mainnnet. 
 

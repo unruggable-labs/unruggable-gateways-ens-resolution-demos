@@ -34,10 +34,22 @@ const deployerWallet = foundry.wallets.admin;
 //const gameFinderName = 'FixedOPFaultGameFinder';
 //let gameFinderArgs = [Number(commit.index)];
 
+
 //Deploy gamefinder
+/*
+// When working with the real gamefinder in the anvil context, iteration is slow.
+// ~80s noting the latest fixes to OP fault proving (see https://gov.optimism.io/t/upgrade-proposal-10-granite-network-upgrade/8733)
+// We use a fixed gamefinder for demonstration purposes.
+// Swap in the below block to use the real gamefinder.
 const gameFinder = await foundry.deploy({
     import: `@unruggable/contracts/op/OPFaultGameFinder.sol`,
     args: [],
+});
+*/
+
+const gameFinder = await foundry.deploy({
+  import: `@unruggable/test/gateway/FixedOPFaultGameFinder.sol`,
+  args: [commit.index],
 });
 
 
@@ -107,7 +119,7 @@ console.log('Hijacked:', await ens.resolver(NODE));
 async function resolve(name: string, keys = ['avatar'], coinType = 60) {
   const resolver = await foundry.provider.getResolver(name);
 
-  //console.log("Resolver", resolver);
+  console.log("Resolver", resolver);
 
   if (!resolver) throw new Error('bug');
   const [address] = await Promise.all([
