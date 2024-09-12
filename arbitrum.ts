@@ -1,24 +1,27 @@
 import { Foundry } from '@adraffy/blocksmith';
-import { OPFaultRollup, Gateway, solidityFollowSlot } from '@unruggable/gateways';
+import { NitroRollup, Gateway, solidityFollowSlot } from '@unruggable/gateways';
 import { ethers } from 'ethers';
 import { createProviderPair, providerURL } from './providers';
 
-const config = OPFaultRollup.mainnetConfig;
+
+const NAME_TO_TEST = "unruggable.eth";
+
+const config = NitroRollup.arb1MainnetConfig;
 
 // Make sure you've created a .env and added node provider API keys
-// console.log(providerURL(config.chain1));
+console.log(providerURL(config.chain1));
+console.log(providerURL(config.chain2));
+//process.exit();
 
-const rollup = await OPFaultRollup.create(
-    createProviderPair(config),
-    config
-);
+const rollup = await new NitroRollup(createProviderPair(config),
+    config);
 const gateway = new Gateway(rollup);
 const commit = await gateway.getLatestCommit();
 
 //const gateway = new Gateway(rollup);
 //const ccip = await serve(gateway, { protocol: 'raw' });
 
-const GATEWAY_URL = 'https://op-gateway.unruggable.com';
+const GATEWAY_URL = 'https://arb-gateway.unruggable.com';
 
 const foundry = await Foundry.launch({
   fork: providerURL(config.chain1),
@@ -28,20 +31,10 @@ const foundry = await Foundry.launch({
 
 const deployerWallet = foundry.wallets.admin;
 
-//const gameFinderName = 'FixedOPFaultGameFinder';
-//let gameFinderArgs = [Number(commit.index)];
-
-//Deploy gamefinder
-const gameFinder = await foundry.deploy({
-    import: `@unruggable/contracts/op/OPFaultGameFinder.sol`,
-    args: [],
-});
-
-
 //Deploy verifier
 const verifier = await foundry.deploy({
-  import: `@unruggable/contracts/op/OPFaultVerifier.sol`,
-  args: [gameFinder.target],
+  import: `@unruggable/contracts/nitro/NitroVerifier.sol`,
+  args: [],
 });
 
 //Deploy proxy
@@ -62,28 +55,27 @@ await foundry.confirm(
     proxyUsingInterface.setGatewayURLs([GATEWAY_URL])
 );  
 await foundry.confirm(proxyUsingInterface.setWindow(rollup.defaultWindow));
-await foundry.confirm(proxyUsingInterface.setPortal(rollup.OptimismPortal.target));
-await foundry.confirm(proxyUsingInterface.setGameTypes(rollup.gameTypeBitMask));
+await foundry.confirm(proxyUsingInterface.setRollup(rollup.L2Rollup.target));
 
 const ENS = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e';
-const NODE = ethers.namehash('opdemo.eth');
+const NODE = ethers.namehash(NAME_TO_TEST);
 const SLOT = solidityFollowSlot(0, NODE) + 1n;
 
 //This is the address of the SlotDataContract deployed on the L2 (that we fork)
-const EXAMPLE_CONTRACT_ADDRESS = '0xf9d79d8c09d24e0C47E32778c830C545e78512CF';
+const EXAMPLE_CONTRACT_ADDRESS = '0xCC344B12fcc8512cc5639CeD6556064a8907c8a1'; //Arb
 
 // Test with the ExampleResolver that reads a value from our live deployed SlotDataContract
 // Uncomment this block, and comment the block below to test with the ExampleResolver
-// const opL1Resolver = await foundry.deploy({
-//     file: 'ExampleResolver',
-//     args: [proxy.target, EXAMPLE_CONTRACT_ADDRESS],
-// });
+ const opL1Resolver = await foundry.deploy({
+     file: 'ExampleResolver',
+     args: [proxy.target, EXAMPLE_CONTRACT_ADDRESS],
+ });
 
 // Test with the OPResolver that reads does a complex v2-spec like resolution
-const opL1Resolver = await foundry.deploy({
+/*const opL1Resolver = await foundry.deploy({
     file: 'OPResolver',
     args: [proxy.target],
-});
+});*/
   
 
 console.log('Resolver depl:', opL1Resolver.target);
@@ -104,7 +96,7 @@ console.log('Hijacked:', await ens.resolver(NODE));
 async function resolve(name: string, keys = ['avatar'], coinType = 60) {
   const resolver = await foundry.provider.getResolver(name);
 
-  //console.log("Resolver", resolver);
+  console.log("Resolver", resolver);
 
   if (!resolver) throw new Error('bug');
   const [address] = await Promise.all([
@@ -116,6 +108,6 @@ async function resolve(name: string, keys = ['avatar'], coinType = 60) {
   });
 }
 
-await resolve('opdemo.eth');
+await resolve(NAME_TO_TEST);
 
 await foundry.shutdown();
