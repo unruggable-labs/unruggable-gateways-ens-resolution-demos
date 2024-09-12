@@ -2,7 +2,7 @@
     <img src="https://raw.githubusercontent.com/unruggable-labs/unruggable-gateways-ens-resolution-demos/main/unruggable-logo-black.png" style = "width:300px;" alt = "Unruggable Gateways" />
 </p>
 
-# ENS Resolution Demo (from Optimism Mainnet)
+# ENS Resolution Demos
 
 ![Resolution Demo](https://github.com/unruggable-labs/unruggable-gateways-ens-resolution-demos/actions/workflows/resolution-demo.yml/badge.svg)
 
