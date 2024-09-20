@@ -46,4 +46,4 @@ jobs:
         run: bun run base.ts
 
       - name: Run Arbitrum Example
-        run: bun run arbitrum.ts
+        run: bun run arbitrum-one.ts

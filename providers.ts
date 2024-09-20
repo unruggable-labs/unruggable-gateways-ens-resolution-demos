@@ -53,7 +53,7 @@ export const CHAIN_MAP = new Map<Chain, ChainInfo>(
         name: 'base',
         rpc: 'https://mainnet.base.org',
         ankr: 'base',
-        infura: 'base-mainnet',
+        //infura: 'base-mainnet', //Infura doesn't support Base
         alchemy: 'base-mainnet',
       },
       {
