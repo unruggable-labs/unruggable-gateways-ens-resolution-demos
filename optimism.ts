@@ -1,7 +1,6 @@
-import { Foundry } from '@adraffy/blocksmith';
 import { OPFaultRollup, Gateway } from '@unruggable/gateways';
 import { createProviderPair, providerURL } from './providers';
-import type { ConfigItem, VerifierArgsType } from './utils';
+import type { VerifierArgsType } from './utils';
 import { runExample } from './example-base';
 
 const config = OPFaultRollup.mainnetConfig;
@@ -11,7 +10,7 @@ console.log(providerURL(config.chain1));
 console.log(providerURL(config.chain2));
 
 const provider = providerURL(config.chain1);
-const rollup = await OPFaultRollup.create(
+const rollup = new OPFaultRollup(
     createProviderPair(config),
     config
 );
@@ -19,52 +18,54 @@ const rollup = await OPFaultRollup.create(
 const gateway = new Gateway(rollup);
 const commit = await gateway.getLatestCommit();
 
+const hooksPath = `@unruggable/contracts/eth/EthVerifierHooks.sol`;
+const gameFinderPath = `@unruggable/test/gateway/FixedOPFaultGameFinder.sol`;
 const verifierPath = `@unruggable/contracts/op/OPFaultVerifier.sol`;
 
 const GATEWAY_URL = 'https://optimism.gateway.unruggable.com';
 
-const verifierArgs: VerifierArgsType = async (foundry) => {
-
-  //Deploy gamefinder
-  /*
-  // When working with the real gamefinder in the anvil context, iteration is slow.
-  // ~80s noting the latest fixes to OP fault proving (see https://gov.optimism.io/t/upgrade-proposal-10-granite-network-upgrade/8733)
-  // We use a fixed gamefinder for demonstration purposes.
-  // Swap in the below block to use the real gamefinder.
-  const gameFinder = await foundry.deploy({
-      import: `@unruggable/contracts/op/OPFaultGameFinder.sol`,
-      args: [],
-  });
-  */
-
-  const gameFinder = await foundry.deploy({
-    import: `@unruggable/test/gateway/FixedOPFaultGameFinder.sol`,
-    args: [commit.index],
-  });
-
-  return [gameFinder.target];
-}
+//Deploy gamefinder
+/*
+// When working with the real gamefinder in the anvil context, iteration is slow.
+// ~80s noting the latest fixes to OP fault proving (see https://gov.optimism.io/t/upgrade-proposal-10-granite-network-upgrade/8733)
+// We use a fixed gamefinder for demonstration purposes.
+// Swap in the below block to use the real gamefinder.
+const gameFinder = await foundry.deploy({
+    import: `@unruggable/contracts/op/OPFaultGameFinder.sol`,
+    args: [],
+});
+*/
 
 const EXAMPLE_CONTRACT_ADDRESS = '0xf9d79d8c09d24e0C47E32778c830C545e78512CF';
-const configurationToSet: ConfigItem[] = [
-  {
-      getter: 'getWindow',
-      setter: 'setWindow',
-      value: rollup.defaultWindow,
-  },
-  {
-      getter: 'gatewayURLs',
-      setter: 'setGatewayURLs',
-      value: [GATEWAY_URL],
-  },
-  {
-      setter: 'setPortal',
-      value: rollup.OptimismPortal.target,
-  },
-  {
-      setter: 'setGameTypes',
-      value: rollup.gameTypeBitMask,
-  },
-];
 
-runExample(provider, verifierPath, verifierArgs, configurationToSet, EXAMPLE_CONTRACT_ADDRESS);
+const verifierArgs: VerifierArgsType = async (smith, deployerWallet) => {
+
+  const gameFinderArgs: any[] = [commit.index];
+
+  const gameFinder = await smith.deploy({
+    import: gameFinderPath,
+    args: gameFinderArgs,
+  });
+
+  const ethHooksArgs: any[] = [];
+
+  const hooks = await smith.deploy({
+    import: hooksPath,
+    args: ethHooksArgs,
+  });
+
+  return [
+      [GATEWAY_URL],
+      rollup.defaultWindow,
+      hooks.target,
+      [
+          rollup.OptimismPortal.target,
+          gameFinder.target,
+          rollup.gameTypeBitMask,
+          rollup.minAgeSec,
+      ]
+  ];
+
+}
+
+runExample(provider, verifierPath, verifierArgs, EXAMPLE_CONTRACT_ADDRESS);

@@ -8,9 +8,9 @@ import {IAddressResolver} from "@ensdomains/contracts/resolvers/profiles/IAddres
 
 import {BytesUtils} from "@ensdomains/contracts/utils/BytesUtils.sol";
 import {Strings} from "@unruggable/lib/openzeppelin-contracts/contracts/utils/Strings.sol";
-import {GatewayFetcher, GatewayRequest} from "@unruggable/contracts/GatewayFetcher.sol";
-import  "@unruggable/contracts/GatewayProtocol.sol";
-import {GatewayFetchTarget, IGatewayProofVerifier} from "@unruggable/contracts/GatewayFetchTarget.sol";
+import {GatewayFetcher} from "@unruggable/contracts/GatewayFetcher.sol";
+import {GatewayFetchTarget, IGatewayVerifier} from "@unruggable/contracts/GatewayFetchTarget.sol";
+import {GatewayRequest, EvalFlag} from "@unruggable/contracts/GatewayRequest.sol";
 
 import {console2 as console} from "forge-std/console2.sol"; // DEBUG
 
@@ -19,11 +19,11 @@ contract OPResolver is IERC165, IExtendedResolver, GatewayFetchTarget {
 	using BytesUtils for bytes;
 	using GatewayFetcher for GatewayRequest;
 
-	IGatewayProofVerifier immutable _verifier;
+	IGatewayVerifier immutable _verifier;
 
 	address constant STORAGE_CONTRACT_ADDRESS = 0xc695404735E0F1587A5398a06cAB34D7d7b009Da;
 
-	constructor(IGatewayProofVerifier verifier) {
+	constructor(IGatewayVerifier verifier) {
 		console.log("Constructing OPResolver..");
         _verifier = verifier;
 	}
@@ -81,13 +81,15 @@ contract OPResolver is IERC165, IExtendedResolver, GatewayFetchTarget {
                 .setOutput(0); // save it
                 
             
-            baseRequest.push(subRequest).evalLoop(STOP_ON_FAILURE); // loop until we get a failure
+            baseRequest.push(subRequest).evalLoop(EvalFlag.STOP_ON_FAILURE); // loop until we get a failure
             baseRequest.pushOutput(1).requireNonzero(uint8(0)).target() // set target to resolver
                 .setSlot(0) // _nodes mapping (map[node])
                 .push(name.namehash(0)).follow()
                 .read().setOutput(2); // read resolved address into output 2
 
-            fetch(_verifier, baseRequest, this.addrCallback.selector, abi.encodePacked(selector));
+            string[] memory urls = new string[](0);
+
+            fetch(_verifier, baseRequest, this.addrCallback.selector, abi.encodePacked(selector), urls);
         }
 
 		return new bytes(64);

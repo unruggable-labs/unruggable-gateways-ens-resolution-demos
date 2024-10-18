@@ -1,6 +1,6 @@
 import { Foundry } from '@adraffy/blocksmith';
-import { namehash, toBeHex, Contract } from 'ethers';
-import { type ConfigItem, type VerifierArgsType } from './utils';
+import { namehash, toBeHex, Contract, Wallet } from 'ethers';
+import { type VerifierArgsType } from './utils';
 import { solidityFollowSlot } from '@unruggable/gateways';
 
 const NAME_TO_TEST = "unruggable.eth";
@@ -9,7 +9,6 @@ export const runExample = async (
     chainLink: string, 
     verifierPath: string, 
     verifierArgs: VerifierArgsType, 
-    configurationToSet: ConfigItem[],
     exampleContractAddress: string
 ) => {
 
@@ -18,51 +17,39 @@ export const runExample = async (
         procLog  : true,
         infoLog  : true,
     });
-      
-    const deployerWallet = foundry.wallets.admin;
-      
+            
     const verifierArgsToUse = typeof verifierArgs === 'function' ? await verifierArgs(foundry) : verifierArgs;
 
-    //Deploy verifier
+    const vmPath = `@unruggable/contracts/GatewayVM.sol`;
+
+    const GatewayVM = await foundry.deploy({
+        import: vmPath,
+        args: [],
+      });
+
+    const verifierLibs = {GatewayVM};
+
     const verifier = await foundry.deploy({
         import: verifierPath,
         args: verifierArgsToUse,
+        libs: verifierLibs,
     });
-      
-    //Deploy proxy
-    const proxy = await foundry.deploy({
-        import: `@unruggable/lib/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol`,
-        args: [verifier.target, deployerWallet.address, '0x'],
-    });
-      
-    // Instantiate the proxy using the underlying verifier interface
-    const proxyUsingInterface = new Contract(
-        proxy.target,
-        verifier.interface,
-        deployerWallet
-    );
-      
-    // Configure the verifier
-    for (const config of configurationToSet) {
-        await foundry.confirm(proxyUsingInterface[config.setter](config.value));
-        console.log(`Set ${config.setter} to ${config.value}`);
-    }
-      
+  
     const ENS = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e';
     const NODE = namehash(NAME_TO_TEST);
     const SLOT = solidityFollowSlot(0, NODE) + 1n;
       
-    const arbitrumOneResolver = await foundry.deploy({
+    const resolver = await foundry.deploy({
         file: 'ExampleResolver',
-        args: [proxy.target, exampleContractAddress],
+        args: [verifier.target, exampleContractAddress],
     });
       
-    console.log('Arbitrum One Resolver deployment:', arbitrumOneResolver.target);
+    console.log('Resolver deployment:', resolver.target);
       
     await foundry.provider.send('anvil_setStorageAt', [
         ENS,
         toBeHex(SLOT, 32),
-        toBeHex(arbitrumOneResolver.target, 32),
+        toBeHex(resolver.target, 32),
     ]);
     const ens = new Contract(
         ENS,

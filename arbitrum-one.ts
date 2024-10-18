@@ -1,7 +1,8 @@
 import { NitroRollup } from '@unruggable/gateways';
 import { createProviderPair, providerURL } from './providers';
-import { runExample } from './example-base';
+import { runExample, type VerifierArgsType } from './example-base';
 import { type ConfigItem } from './utils';
+import { Wallet } from 'ethers';
 
 const config = NitroRollup.arb1MainnetConfig;
 
@@ -14,26 +15,30 @@ const rollup = await new NitroRollup(
   createProviderPair(config), 
   config
 );
+const hooksPath = `@unruggable/contracts/eth/EthVerifierHooks.sol`;
 const verifierPath = `@unruggable/contracts/nitro/NitroVerifier.sol`;
-const verifierArgs: any[] = [];
 const GATEWAY_URL = 'https://arbitrum-one.gateway.unruggable.com';
+
+const verifierArgs: VerifierArgsType = async (smith, deployerWallet) => {
+
+  const ethHooksArgs: any[] = [];
+
+  const hooks = await smith.deploy({
+    import: hooksPath,
+    args: ethHooksArgs,
+  });
+
+  const verifierArgs: any[] = [
+    [GATEWAY_URL],
+    rollup.defaultWindow,
+    hooks.target,
+    rollup.L2Rollup.target
+  ];
+
+  return verifierArgs;
+}
+
 //This is the address of the SlotDataContract deployed on the L2 (that we fork)
 const EXAMPLE_CONTRACT_ADDRESS = '0xCC344B12fcc8512cc5639CeD6556064a8907c8a1'; //Arb
-const configurationToSet: ConfigItem[] = [
-  {
-    getter: 'getWindow',
-    setter: 'setWindow',
-    value: rollup.defaultWindow,
-  },
-  {
-    getter: 'gatewayURLs',
-    setter: 'setGatewayURLs',
-    value: [GATEWAY_URL],
-  },
-  {
-    setter: 'setRollup',
-    value: rollup.L2Rollup.target,
-  },
-];
 
-runExample(provider, verifierPath, verifierArgs, configurationToSet, EXAMPLE_CONTRACT_ADDRESS);
+runExample(provider, verifierPath, verifierArgs, EXAMPLE_CONTRACT_ADDRESS);

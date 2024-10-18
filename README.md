@@ -6,16 +6,15 @@
 
 ![Resolution Demo](https://github.com/unruggable-labs/unruggable-gateways-ens-resolution-demos/actions/workflows/resolution-demo.yml/badge.svg)
 
-This demo demonstrates a full end to end implementation of the [Unruggable Gateways](https://github.com/unruggable-labs/unruggable-gateways) codebase for resolving an ENS name using data stored on Optimism mainnnet. 
+This demo demonstrates a full end to end implementations of the [Unruggable Gateways](https://github.com/unruggable-labs/unruggable-gateways) codebase for resolving an ENS name using data stored on [Arbitrum](https://arbiscan.io/address/0xCC344B12fcc8512cc5639CeD6556064a8907c8a1#code), [Base](https://basescan.org/address/0x0C49361E151BC79899A9DD31B8B0CCdE4F6fd2f6#code), and [Optimism](https://optimistic.etherscan.io/address/0xf9d79d8c09d24e0C47E32778c830C545e78512CF#code). 
 
-It utilises [Foundry](https://github.com/foundry-rs) (through [blocksmith.js](https://github.com/adraffy/blocksmith.js)) to fork **Ethereum mainnet** and deploy an instance of `OPFaultVerifier`. This verifier is used to verify proofs returned by Unruggable's Optimism gateway running at `https://op-gateway.unruggable.com`.
+It utilises [Foundry](https://github.com/foundry-rs) (through [blocksmith.js](https://github.com/adraffy/blocksmith.js)) to fork **Ethereum mainnet** and deploy an instance of the respective chain specific verifier. This verifier is used to verify proofs returned by Unruggable's gateways running at:
 
-The gateway is fetching data proofs from the **real** Optimism Mainnet. This repo includes:
+- [https://arbitrum-one.gateway.unruggable.com](https://arbitrum-one.gateway.unruggable.com)
+- [https://base.gateway.unruggable.com](https://base.gateway.unruggable.com)
+- [https://optimism.gateway.unruggable.com](https://optimism.gateway.unruggable.com)
 
-- `ExampleResolver.sol` which resolves against an address stored in our standard `SlotDataContract` (deployed [here](https://optimistic.etherscan.io/address/0xf9d79d8c09d24e0C47E32778c830C545e78512CF#code)).
-
-- `OPResolver.sol` which resolves against a [storage contract](https://optimistic.etherscan.io/address/0xc695404735E0F1587A5398a06cAB34D7d7b009Da#code) that implements  a PoC of the complex resolution logic outlined in the ENS v2 specification.
-
+The gateway is fetching data proofs from the **real** chains. 
 
 To install dependencies:
 
@@ -31,5 +30,7 @@ Copy `.env.example` to `.env` and input API keys for your node provider (Alchemy
 To run:
 
 ```bash
-bun run index.ts
+bun run arbitrum-one.ts
+bun run base.ts
+bun run optimism.ts
 ```

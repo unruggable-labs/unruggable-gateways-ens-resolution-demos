@@ -11,10 +11,9 @@ import {IAddressResolver} from "@ensdomains/contracts/resolvers/profiles/IAddres
 import {BytesUtils} from "@ensdomains/contracts/utils/BytesUtils.sol";
 import {Strings} from "@unruggable/lib/openzeppelin-contracts/contracts/utils/Strings.sol";
 import {GatewayFetcher, GatewayRequest} from "@unruggable/contracts/GatewayFetcher.sol";
-import  "@unruggable/contracts/GatewayProtocol.sol";
 
 // bases
-import {GatewayFetchTarget, IGatewayProofVerifier} from "@unruggable/contracts/GatewayFetchTarget.sol";
+import {GatewayFetchTarget, IGatewayVerifier} from "@unruggable/contracts/GatewayFetchTarget.sol";
 
 import "forge-std/console2.sol"; // DEBUG
 
@@ -23,10 +22,10 @@ contract ExampleResolver is IERC165, IExtendedResolver, GatewayFetchTarget {
 	using BytesUtils for bytes;
 	using GatewayFetcher for GatewayRequest;
 
-	IGatewayProofVerifier immutable _verifier;
+	IGatewayVerifier immutable _verifier;
 	address immutable _exampleAddress;
 
-	constructor(IGatewayProofVerifier verifier, address exampleAddress) {
+	constructor(IGatewayVerifier verifier, address exampleAddress) {
 		_verifier = verifier;
         _exampleAddress = exampleAddress;
 	}
@@ -45,7 +44,7 @@ contract ExampleResolver is IERC165, IExtendedResolver, GatewayFetchTarget {
             .debug("lol")
             .setOutput(0);
 
-		fetch(_verifier, r, this.addrCallback.selector, '');    
+		fetch(_verifier, r, this.addrCallback.selector);    
 		return new bytes(64);
 	}
 

@@ -70,7 +70,7 @@ const NODE = ethers.namehash('opdemo.eth');
 const SLOT = solidityFollowSlot(0, NODE) + 1n;
 
 //This is the address of the SlotDataContract deployed on the L2 (that we fork)
-const EXAMPLE_CONTRACT_ADDRESS = '0x9720E17D90202c20449D07AFEA22Bd85de674bA9';
+const EXAMPLE_CONTRACT_ADDRESS = '0xf9d79d8c09d24e0C47E32778c830C545e78512CF';
 
 // Test with the ExampleResolver that reads a value from our live deployed SlotDataContract
 // Uncomment this block, and comment the block below to test with the ExampleResolver
