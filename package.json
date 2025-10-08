@@ -10,6 +10,6 @@
   },
   "dependencies": {
     "@adraffy/blocksmith": "^0.0.40",
-    "@unruggable/gateways": "^0.1.3"
+    "@unruggable/gateways": "^1.2.5"
   }
 }

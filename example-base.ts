@@ -1,6 +1,6 @@
 import { Foundry } from '@adraffy/blocksmith';
 import { namehash, toBeHex, Contract, Wallet } from 'ethers';
-import { type VerifierArgsType } from './utils';
+import { type VerifierArgsType, type VerifierLibsType } from './utils';
 import { solidityFollowSlot } from '@unruggable/gateways';
 
 const NAME_TO_TEST = "unruggable.eth";
@@ -9,7 +9,8 @@ export const runExample = async (
     chainLink: string, 
     verifierPath: string, 
     verifierArgs: VerifierArgsType, 
-    exampleContractAddress: string
+    verifierLibs: VerifierLibsType,
+    exampleContractAddress: string,
 ) => {
 
     const foundry = await Foundry.launch({
@@ -19,6 +20,7 @@ export const runExample = async (
     });
             
     const verifierArgsToUse = typeof verifierArgs === 'function' ? await verifierArgs(foundry) : verifierArgs;
+    let verifierLibsToUse: any = typeof verifierLibs === 'function' ? await verifierLibs(foundry) : verifierLibs;
 
     const vmPath = `@unruggable/contracts/GatewayVM.sol`;
 
@@ -27,12 +29,12 @@ export const runExample = async (
         args: [],
       });
 
-    const verifierLibs = {GatewayVM};
+    verifierLibsToUse = {...verifierLibsToUse, GatewayVM};
 
     const verifier = await foundry.deploy({
         import: verifierPath,
         args: verifierArgsToUse,
-        libs: verifierLibs,
+        libs: verifierLibsToUse,
     });
   
     const ENS = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e';
@@ -41,7 +43,10 @@ export const runExample = async (
       
     const resolver = await foundry.deploy({
         file: 'ExampleResolver',
-        args: [verifier.target, exampleContractAddress],
+        args: [
+            verifier.target, 
+            exampleContractAddress
+        ],
     });
       
     console.log('Resolver deployment:', resolver.target);

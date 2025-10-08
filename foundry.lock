@@ -1,0 +1,11 @@
+{
+  "lib/forge-std": {
+    "rev": "1de6eecf821de7fe2c908cc48d3ab3dced20717f"
+  },
+  "lib/ens-contracts": {
+    "rev": "5421b5689e695531dc9739f0ad861839bdd231cb"
+  },
+  "lib/unruggable-gateways": {
+    "rev": "3861bf4b0f32aa93ad13e590c38cd205bb1d9627"
+  }
+}

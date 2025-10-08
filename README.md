@@ -10,7 +10,7 @@ This demo demonstrates a full end to end implementations of the [Unruggable Gate
 
 It utilises [Foundry](https://github.com/foundry-rs) (through [blocksmith.js](https://github.com/adraffy/blocksmith.js)) to fork **Ethereum mainnet** and deploy an instance of the respective chain specific verifier. This verifier is used to verify proofs returned by Unruggable's gateways running at:
 
-- [https://arbitrum-one.gateway.unruggable.com](https://arbitrum-one.gateway.unruggable.com)
+- [https://arbitrum.gateway.unruggable.com](https://arbitrum.gateway.unruggable.com)
 - [https://base.gateway.unruggable.com](https://base.gateway.unruggable.com)
 - [https://optimism.gateway.unruggable.com](https://optimism.gateway.unruggable.com)
 
@@ -30,7 +30,7 @@ Copy `.env.example` to `.env` and input API keys for your node provider (Alchemy
 To run:
 
 ```bash
-bun run arbitrum-one.ts
+bun run arbitrum.ts
 bun run base.ts
 bun run optimism.ts
 ```

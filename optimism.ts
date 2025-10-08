@@ -1,6 +1,6 @@
 import { OPFaultRollup, Gateway } from '@unruggable/gateways';
 import { createProviderPair, providerURL } from './providers';
-import type { VerifierArgsType } from './utils';
+import type { VerifierArgsType, VerifierLibsType } from './utils';
 import { runExample } from './example-base';
 
 const config = OPFaultRollup.mainnetConfig;
@@ -12,7 +12,8 @@ console.log(providerURL(config.chain2));
 const provider = providerURL(config.chain1);
 const rollup = new OPFaultRollup(
     createProviderPair(config),
-    config
+    config,
+    1 // minAgeSec
 );
 
 const gateway = new Gateway(rollup);
@@ -38,7 +39,7 @@ const gameFinder = await foundry.deploy({
 
 const EXAMPLE_CONTRACT_ADDRESS = '0xf9d79d8c09d24e0C47E32778c830C545e78512CF';
 
-const verifierArgs: VerifierArgsType = async (smith, deployerWallet) => {
+const verifierArgs: VerifierArgsType = async (smith) => {
 
   const gameFinderArgs: any[] = [commit.index];
 
@@ -68,4 +69,14 @@ const verifierArgs: VerifierArgsType = async (smith, deployerWallet) => {
 
 }
 
-runExample(provider, verifierPath, verifierArgs, EXAMPLE_CONTRACT_ADDRESS);
+const verifierLibs: VerifierLibsType = async (smith) => {
+  return {};
+}
+
+runExample(
+  provider, 
+  verifierPath, 
+  verifierArgs, 
+  verifierLibs,
+  EXAMPLE_CONTRACT_ADDRESS
+);
