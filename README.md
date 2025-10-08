@@ -16,6 +16,12 @@ It utilises [Foundry](https://github.com/foundry-rs) (through [blocksmith.js](ht
 
 The gateway is fetching data proofs from the **real** chains. 
 
+Checkout the repo:
+
+```bash
+git clone git@github.com:unruggable-labs/unruggable-gateways-ens-resolution-demos.git
+```
+
 To install dependencies:
 
 ```bash
@@ -25,7 +31,7 @@ forge install
 
 Configure:
 
-Copy `.env.example` to `.env` and input API keys for your node provider (Alchemy/Infura/Ankr).
+Copy `.env.example` to `.env` and input API keys for your node provider (Alchemy/Infura/dRPC).
 
 To run:
 
