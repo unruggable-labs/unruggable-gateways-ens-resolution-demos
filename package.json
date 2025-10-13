@@ -9,7 +9,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@adraffy/blocksmith": "^0.0.40",
+    "@adraffy/blocksmith": "^0.1.53",
     "@unruggable/gateways": "^1.2.5"
   }
 }
